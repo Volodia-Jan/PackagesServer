@@ -1,5 +1,6 @@
 ﻿using PackagesServer.Core.Dtos;
 using PackagesServer.Core.Enumerations;
+using PackagesServer.Core.Helpers;
 using PackagesServer.Core.RepositoryContracts;
 using PackagesServer.Core.ServiceContracts;
 
@@ -52,6 +53,25 @@ public class PackagesService : IPackagesService
         _packagesRepository.FindAll()
         .Select(entity => _mapper.ToDto(entity, _recidientsRepository))
         .ToList();
+
+    public List<PackageDto> GetAllPackagesByRecipientId(int recipientId) =>
+        _packagesRepository.FindAll()
+        .Where(e => e.RecipientId == recipientId)
+        .Select(e => _mapper.ToDto(e, _recidientsRepository))
+        .ToList();
+
+    public List<PackageDto> GetAllPackagesByStatus(DeliverStatus status) =>
+        _packagesRepository.FindAll()
+        .Where(e => e.Status == status)
+        .Select(e => _mapper.ToDto(e, _recidientsRepository))
+        .ToList();
+
+    public byte[] GetBareCode(int id)
+    {
+        var package = GetPackageById(id);
+
+        return BarecodeGenerator.GenerateBarcode(package.PackageIdentifier);
+    }
 
     public PackageDto GetPackageById(int id)
     {

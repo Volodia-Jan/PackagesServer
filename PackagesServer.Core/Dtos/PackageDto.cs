@@ -1,5 +1,4 @@
 ﻿using PackagesServer.Core.Enumerations;
-using System.ComponentModel.DataAnnotations;
 
 namespace PackagesServer.Core.Dtos;
 public class PackageDto

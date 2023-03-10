@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PackagesServer.Core.Dtos;
+using PackagesServer.Core.Enumerations;
 using PackagesServer.Core.ServiceContracts;
 using Swashbuckle.AspNetCore.Annotations;
 
@@ -45,4 +46,22 @@ public class PackagesController : ControllerBase
     [SwaggerResponse(StatusCodes.Status200OK, "OK", typeof(PackageDto))]
     public ActionResult<PackageDto> DeletePackage(int id) =>
         _packagesService.DeletePackage(id);
+
+    [HttpGet("{isDelivered:bool}")]
+    [SwaggerOperation("Returns all packages with given deliver status")]
+    [SwaggerResponse(StatusCodes.Status200OK, "OK", typeof(List<PackageDto>))]
+    public ActionResult<List<PackageDto>> GetAllPackagesByStatus(bool isDelivered) =>
+        _packagesService.GetAllPackagesByStatus(isDelivered ? DeliverStatus.Delivered : DeliverStatus.Received);
+
+    [HttpGet("recipient/{recipientId:int}")]
+    [SwaggerOperation("Returns all packages for given recipient")]
+    [SwaggerResponse(StatusCodes.Status200OK, "OK", typeof(List<PackageDto>))]
+    public ActionResult<List<PackageDto>> GetAllPacakgesByRecipient(int recipientId) => 
+        _packagesService.GetAllPackagesByRecipientId(recipientId);
+
+    [HttpGet("barcode/{id}")]
+    [SwaggerOperation("Returns barcode as jpg file")]
+    [SwaggerResponse(StatusCodes.Status200OK, "OK")]
+    public ActionResult GetBarcodeByPackageId(int id) =>
+        File(_packagesService.GetBareCode(id), "image/jpeg");
 }
